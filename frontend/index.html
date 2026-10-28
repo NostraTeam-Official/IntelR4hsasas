@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090a0e">
+  <meta name="description" content="IntelR4h — izinli, dahili Discord kayıtları için kontrol paneli.">
+  <title>IntelR4h — Control Center</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+  <div class="background-glow glow-one" aria-hidden="true"></div>
+  <div class="background-glow glow-two" aria-hidden="true"></div>
+
+  <main id="authView" class="auth-layout">
+    <section class="auth-intro">
+      <div class="brand brand-large"><span class="brand-symbol">IR</span><span>IntelR4h<span class="brand-dot">.</span></span></div>
+      <div class="eyebrow"><span class="pulse-dot"></span> PRIVATE CONTROL SPACE</div>
+      <h1>Veri değil,<br><span>kontrol.</span></h1>
+      <p class="intro-copy">Kendi eklediğin ve kullanımına izin verilen Discord kayıtlarını tek bir yerde düzenle. Erişim, roller ve sorgu kotası kontrol altında.</p>
+      <div class="intro-foot"><span class="tiny-line"></span> AUTHORIZED RECORDS ONLY <span class="foot-separator">/</span> SECURE WORKSPACE</div>
+    </section>
+
+    <section class="auth-card glass-card" aria-labelledby="authHeading">
+      <div class="auth-card-top">
+        <div class="brand brand-small"><span class="brand-symbol">IR</span><span>IntelR4h<span class="brand-dot">.</span></span></div>
+        <span class="secure-label"><span class="secure-icon">●</span> Güvenli alan</span>
+      </div>
+      <div class="auth-tabs" role="tablist" aria-label="Hesap işlemleri">
+        <button class="auth-tab active" data-auth-mode="login" role="tab" aria-selected="true">Giriş yap</button>
+        <button class="auth-tab" data-auth-mode="register" role="tab" aria-selected="false">Hesap oluştur</button>
+      </div>
+      <h2 id="authHeading">Tekrar hoş geldin.</h2>
+      <p id="authSubtitle" class="muted">Kontrol paneline erişmek için giriş yap.</p>
+      <form id="authForm" autocomplete="on">
+        <label class="field-label" for="authEmail">E-posta</label>
+        <div class="input-wrap"><span class="input-glyph">@</span><input id="authEmail" name="email" type="email" placeholder="ornek@mail.com" autocomplete="email" required maxlength="254"></div>
+        <label class="field-label" for="authPassword">Parola</label>
+        <div class="input-wrap"><span class="input-glyph">⌑</span><input id="authPassword" name="password" type="password" placeholder="En az 10 karakter" autocomplete="current-password" required minlength="10" maxlength="128"><button type="button" id="togglePassword" class="show-password" aria-label="Parolayı göster">Göster</button></div>
+        <div id="setupCodeGroup" class="hidden">
+          <label class="field-label" for="setupCode">Kurucu kurulum kodu <span class="optional">İsteğe bağlı</span></label>
+          <div class="input-wrap"><span class="input-glyph">⌘</span><input id="setupCode" name="setup_code" type="password" placeholder="Yalnız ilk kurucu hesap için" autocomplete="off" maxlength="200"></div>
+          <p class="field-hint">Bu kodu sunucuyu kuran kişi ortam değişkeninden belirler.</p>
+        </div>
+        <button id="authSubmit" class="btn btn-primary btn-full" type="submit"><span>Giriş yap</span><span class="btn-arrow">↗</span></button>
+        <div id="authMessage" class="message" aria-live="polite"></div>
+      </form>
+      <div class="auth-divider"><span></span><small>INTELR4H ACCESS</small><span></span></div>
+      <p class="auth-note">Devam ederek yalnızca kullanmaya yetkili olduğun kayıtları görüntüleyeceğini kabul etmiş olursun.</p>
+    </section>
+    <div class="auth-bottom">© 2026 IntelR4h <span>•</span> Dahili kayıt yönetimi</div>
+  </main>
+
+  <main id="appView" class="app-shell hidden">
+    <aside id="sidebar" class="sidebar glass-card">
+      <div class="sidebar-brand"><div class="brand"><span class="brand-symbol">IR</span><span>IntelR4h<span class="brand-dot">.</span></span></div><button id="closeSidebar" class="icon-button mobile-close" aria-label="Menüyü kapat">×</button></div>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Ana menü">
+        <button class="nav-item active" data-page="overview"><span class="nav-icon">▦</span> Genel bakış</button>
+        <button class="nav-item" data-page="search"><span class="nav-icon">⌕</span> Kayıt sorgula <span class="nav-count">05</span></button>
+        <button class="nav-item admin-only hidden" data-page="records"><span class="nav-icon">▤</span> Kayıt yönetimi</button>
+        <button class="nav-item owner-only hidden" data-page="users"><span class="nav-icon">♙</span> Kullanıcılar</button>
+        <button class="nav-item" data-page="stats"><span class="nav-icon">◷</span> Canlı istatistik</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="plan-card"><div class="plan-top"><span class="plan-mini-icon">✳</span><span id="planLabel">NORMAL PLAN</span><span class="plan-status"></span></div><strong id="planQuota">5 sorgu / 72 saat</strong><div class="quota-track"><span id="sidebarQuotaBar"></span></div><small id="sidebarQuotaText">Kota durumu yükleniyor</small></div>
+        <div class="sidebar-user"><div class="avatar" id="userAvatar">IR</div><div class="sidebar-user-meta"><strong id="sidebarEmail">Hesap</strong><small id="sidebarRole">Normal kullanıcı</small></div><button id="logoutBtn" class="icon-button logout-button" title="Çıkış yap" aria-label="Çıkış yap">↗</button></div>
+      </div>
+    </aside>
+
+    <section class="main-column">
+      <header class="topbar">
+        <div class="topbar-title"><button id="openSidebar" class="icon-button mobile-menu" aria-label="Menüyü aç">☰</button><span class="breadcrumb">INTELR4H <span>/</span> <strong id="pageBreadcrumb">GENEL BAKIŞ</strong></span></div>
+        <div class="topbar-right"><div class="connection-state"><span class="pulse-dot"></span><span id="connectionLabel">API bağlantısı kontrol ediliyor</span></div><div class="topbar-avatar" id="topbarAvatar">IR</div></div>
+      </header>
+
+      <section class="page-content">
+        <div id="page-overview" class="page-section">
+          <div class="page-heading"><div><div class="eyebrow">CONTROL CENTER <span class="heading-slash">/</span> 01</div><h1>Genel bakış<span class="heading-dot">.</span></h1><p>Sistemin durumu ve hesabının kısa özeti.</p></div><div class="date-chip"><span class="date-icon">◷</span><span id="todayDate">Sistem saati</span></div></div>
+          <div class="welcome-banner glass-card"><div class="banner-content"><span class="banner-kicker">SİSTEM HAZIR</span><h2>Kontrol sende<span class="heading-dot">.</span></h2><p>Merhaba, <strong id="welcomeEmail">kullanıcı</strong>. Kayıtları güvenli ve izinli kapsamda yönet.</p><button class="btn btn-light" data-go="search">Sorguya git <span>↗</span></button></div><div class="banner-art" aria-hidden="true"><div class="art-ring ring-a"></div><div class="art-ring ring-b"></div><div class="art-cross">+</div><div class="art-core">IR</div><div class="art-coord">39°N<br>34°E</div></div></div>
+          <div class="section-title-row"><div><h3>Sistem özeti</h3><p>Son güncellenen ölçümler</p></div><span class="live-pill"><span class="pulse-dot"></span> CANLI</span></div>
+          <div class="stat-grid">
+            <article class="stat-card glass-card"><div class="stat-top"><span>Aktif kullanıcı</span><span class="stat-icon">◉</span></div><div class="stat-value" id="overviewActive">—</div><div class="stat-foot"><span class="stat-dot green"></span> Son 2 dakikada aktif</div></article>
+            <article class="stat-card glass-card"><div class="stat-top"><span>Kayıtlı hesap</span><span class="stat-icon">♙</span></div><div class="stat-value" id="overviewUsers">—</div><div class="stat-foot">Sistemde oluşturulan hesaplar</div></article>
+            <article class="stat-card glass-card"><div class="stat-top"><span>Yetkili kayıt</span><span class="stat-icon">▤</span></div><div class="stat-value" id="overviewRecords">—</div><div class="stat-foot">Dahili veritabanındaki kayıtlar</div></article>
+            <article class="stat-card glass-card"><div class="stat-top"><span>Son 24 saat sorgu</span><span class="stat-icon">⌕</span></div><div class="stat-value" id="overviewSearches">—</div><div class="stat-foot">Tüm kullanıcıların toplamı</div></article>
+          </div>
+          <div class="bottom-grid">
+            <article class="panel-card glass-card"><div class="panel-header"><div><h3>Hesap durumu</h3><p>Aktif plan ve kullanım</p></div><span class="panel-icon">⌘</span></div><div class="account-row"><div class="account-row-icon">✳</div><div><strong id="overviewPlan">Normal plan</strong><small>72 saatlik hareketli kota</small></div><span id="overviewRemaining" class="remaining-number">5 / 5</span></div><div class="quota-track large"><span id="overviewQuotaBar"></span></div><div class="quota-explainer"><span id="quotaUsedText">Henüz sorgu kullanılmadı</span><span>5 hak</span></div><div class="panel-note"><span>i</span> Her sorgu 72 saatlik kotaya dahil edilir.</div></article>
+            <article class="panel-card glass-card"><div class="panel-header"><div><h3>Güvenli kullanım</h3><p>IntelR4h erişim ilkeleri</p></div><span class="panel-icon green-icon">✓</span></div><div class="security-list"><div class="security-row"><span class="security-check">✓</span><div><strong>Yetki kontrollü erişim</strong><small>Yönetim işlemleri rol gerektirir.</small></div><span class="security-state">AKTİF</span></div><div class="security-row"><span class="security-check">✓</span><div><strong>Parolalar korunur</strong><small>Parolalar düz metin tutulmaz.</small></div><span class="security-state">AKTİF</span></div><div class="security-row"><span class="security-check">✓</span><div><strong>İzinli dahili kayıtlar</strong><small>Harici sızıntı taraması yapılmaz.</small></div><span class="security-state">AKTİF</span></div></div></article>
+          </div>
+          <div class="disclaimer-line"><span>!</span><p>IntelR4h yalnızca senin eklediğin ve kullanma iznin bulunan dahili kayıtları arar. Discord ID tek başına özel ya da gizli bilgileri açığa çıkarmaz.</p></div>
+        </div>
+
+        <div id="page-search" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">RECORD LOOKUP <span class="heading-slash">/</span> 02</div><h1>Kayıt sorgula<span class="heading-dot">.</span></h1><p>Yalnızca IntelR4h veritabanına eklenmiş izinli kayıtları kontrol et.</p></div><div class="quota-chip"><span class="quota-chip-icon">⌕</span><div><small>KALAN SORGU</small><strong id="searchQuotaDisplay">5 / 5</strong></div></div></div>
+          <div class="search-layout"><section class="search-card glass-card"><div class="search-card-heading"><div class="search-icon-box">⌕</div><div><h2>Discord ID kontrolü</h2><p>Arama, dahili kayıtlarda tam eşleşme yapar.</p></div></div><form id="searchForm"><label class="field-label" for="discordIdInput">Discord kullanıcı ID'si</label><div class="search-input-row"><input id="discordIdInput" type="text" inputmode="numeric" placeholder="Örn. 123456789012345678" maxlength="25" autocomplete="off" required><button type="submit" id="searchButton" class="btn btn-primary"><span>Sorgula</span><span class="btn-arrow">↗</span></button></div><div class="search-help"><span>i</span> Kullanıcının Discord ID'sini kendi Discord uygulamasından kopyalayabilirsin.</div><div id="searchMessage" class="message" aria-live="polite"></div></form><div class="search-divider"></div><div class="result-heading"><h3>Sorgu sonucu</h3><span id="resultStatus" class="result-tag">BEKLENİYOR</span></div><div id="searchResult" class="empty-result"><div class="empty-result-icon">⌕</div><strong>Henüz sorgu yapılmadı</strong><p>Bir ID gir ve yalnızca izinli dahili kayıtları kontrol et.</p></div></section><aside class="search-aside"><div class="aside-card glass-card"><div class="aside-eyebrow">KULLANIM LİMİTİ</div><div class="aside-limit"><strong id="searchAsideRemaining">05</strong><span>/ 05 sorgu</span></div><div class="quota-track large"><span id="searchQuotaBar"></span></div><p id="searchQuotaHelp">72 saat içinde en fazla 5 sorgu.</p><div class="aside-separator"></div><div class="aside-meta"><span>Plan</span><strong id="searchPlanName">Normal</strong></div><div class="aside-meta"><span>Kota yenileme</span><strong id="searchResetAt">Sorgu sonrası hesaplanır</strong></div></div><div class="aside-warning"><span>!</span><p><strong>Gizliliği koru.</strong><br>Parola, telefon, adres, sızdırılmış veri veya başka özel bilgiler ekleme.</p></div></aside></div>
+        </div>
+
+        <div id="page-records" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">DATABASE MANAGEMENT <span class="heading-slash">/</span> 03</div><h1>Kayıt yönetimi<span class="heading-dot">.</span></h1><p>Yalnızca kullanım izni olan dahili kayıtları ekle.</p></div><span class="admin-badge">♙ YÖNETİCİ</span></div>
+          <div class="record-management-grid"><section class="panel-card glass-card"><div class="panel-header"><div><h3>Yeni kayıt ekle</h3><p>Kayıtlar tüm kullanıcıların dahili sorgularında bulunur.</p></div><span class="panel-icon">＋</span></div><form id="recordForm" class="stack-form"><label class="field-label" for="recordDiscordId">Discord ID <span class="required-star">*</span></label><input id="recordDiscordId" type="text" inputmode="numeric" maxlength="25" placeholder="Sayısal Discord ID" required><label class="field-label" for="recordUsername">Discord kullanıcı adı</label><input id="recordUsername" type="text" maxlength="100" placeholder="İzinli / herkese açık ad"><label class="field-label" for="recordTags">Etiketler</label><input id="recordTags" type="text" maxlength="300" placeholder="Örn. topluluk, moderasyon"><label class="field-label" for="recordSummary">İzinli not</label><textarea id="recordSummary" rows="4" maxlength="2000" placeholder="Yalnızca paylaşılmasına izin verilen, gerekli ve sınırlı bilgi."></textarea><label class="field-label" for="recordSource">Kaynak / izin açıklaması <span class="required-star">*</span></label><input id="recordSource" type="text" maxlength="300" placeholder="Örn. sunucu moderasyon kaydı / kullanıcı izni" required><label class="consent-line"><input id="recordConsent" type="checkbox" required><span>Bu kaydı eklemek ve bu kapsamda kullanmak için yetkim olduğunu onaylıyorum.</span></label><button class="btn btn-primary btn-full" type="submit"><span>Kaydı kaydet</span><span class="btn-arrow">↗</span></button><div id="recordMessage" class="message" aria-live="polite"></div></form></section><section class="panel-card glass-card"><div class="panel-header"><div><h3>Son eklenen kayıtlar</h3><p>Yalnızca yetkili hesaplar görebilir.</p></div><button id="refreshRecords" class="icon-button" title="Yenile" aria-label="Kayıtları yenile">↻</button></div><div id="recordList" class="record-list"><div class="loading-line">Kayıtlar yükleniyor...</div></div></section></div>
+        </div>
+
+        <div id="page-users" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">ACCESS CONTROL <span class="heading-slash">/</span> 04</div><h1>Kullanıcılar<span class="heading-dot">.</span></h1><p>Hesapları ve erişim rollerini yönet. Kurucu rolü korunur.</p></div><span class="owner-badge">✦ KURUCU YETKİSİ</span></div>
+          <section class="panel-card glass-card user-management"><div class="panel-header"><div><h3>Hesap erişimleri</h3><p>Yönetici atama işlemlerini yalnızca kurucu yapabilir.</p></div><button id="refreshUsers" class="icon-button" title="Yenile" aria-label="Kullanıcıları yenile">↻</button></div><div id="usersList" class="table-wrap"><div class="loading-line">Kullanıcılar yükleniyor...</div></div><div id="usersMessage" class="message" aria-live="polite"></div></section>
+        </div>
+
+        <div id="page-stats" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">LIVE TELEMETRY <span class="heading-slash">/</span> 05</div><h1>Canlı istatistik<span class="heading-dot">.</span></h1><p>Hesap ve kullanım toplamları sunucudan yenilenir.</p></div><span class="live-pill"><span class="pulse-dot"></span> 30 SN'DE YENİLENİR</span></div>
+          <div class="stats-focus glass-card"><div><div class="eyebrow">ANLIK GÖRÜNÜM</div><h2><span id="statsActiveLarge">—</span><span> aktif kullanıcı</span></h2><p>Son 120 saniye içinde API ile etkileşime giren oturumlar.</p></div><div class="stats-orbit" aria-hidden="true"><div class="stats-orbit-ring"></div><div class="stats-orbit-ring ring-inner"></div><div class="stats-orbit-core"><span class="pulse-dot"></span></div></div></div>
+          <div class="stats-grid"><article class="stat-card glass-card"><div class="stat-top"><span>Oluşturulan hesaplar</span><span class="stat-icon">♙</span></div><div class="stat-value" id="statsUsers">—</div><div class="stat-foot">Toplam kayıtlı hesap</div></article><article class="stat-card glass-card"><div class="stat-top"><span>Dahili veri kaydı</span><span class="stat-icon">▤</span></div><div class="stat-value" id="statsRecords">—</div><div class="stat-foot">Yetkili olarak eklenmiş ID</div></article><article class="stat-card glass-card"><div class="stat-top"><span>24 saatlik sorgu</span><span class="stat-icon">⌕</span></div><div class="stat-value" id="statsSearches">—</div><div class="stat-foot">Sistem genelindeki aramalar</div></article></div>
+          <div class="stats-note"><span>i</span><p>Aktif kullanıcı sayısı gerçek zamanlı WebSocket sayımı değildir; son 2 dakika içinde API kullanmış oturumların yaklaşık sayısıdır. İstatistikler 30 saniyede bir yenilenir.</p></div>
+        </div>
+        <footer class="app-footer"><span>IntelR4h <b>·</b> CONTROL CENTER</span><span>AUTHORIZED ACCESS ONLY</span></footer>
+      </section>
+    </section>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+</body>
+</html>
